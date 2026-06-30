@@ -38,7 +38,10 @@ if ($hassiteconfig) {
         get_string('settingsheading_desc', 'local_ransomleak')
     ));
 
-    // Tenant URL. On change, lib.php's callback (re)registers the preconfigured tool.
+    // Both settings (re)register the tool on change, via the same lib.php callback.
+    $callback = 'local_ransomleak_settings_updated';
+
+    // Tenant URL.
     $tenant = new admin_setting_configtext(
         'local_ransomleak/tenanturl',
         get_string('tenanturl', 'local_ransomleak'),
@@ -46,7 +49,7 @@ if ($hassiteconfig) {
         '',
         PARAM_RAW_TRIMMED
     );
-    $tenant->set_updatedcallback('local_ransomleak_tenanturl_updated');
+    $tenant->set_updatedcallback($callback);
     $settings->add($tenant);
 
     // Tool display name. Also (re)registers so a rename syncs to the LTI tool.
@@ -57,6 +60,6 @@ if ($hassiteconfig) {
         get_string('toolname_default', 'local_ransomleak'),
         PARAM_TEXT
     );
-    $name->set_updatedcallback('local_ransomleak_tenanturl_updated');
+    $name->set_updatedcallback($callback);
     $settings->add($name);
 }

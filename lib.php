@@ -24,11 +24,11 @@
 
 /**
  * Settings-change callback: (re)register the preconfigured LTI 1.3 tool whenever
- * the admin saves a new tenant URL. Surfaces a notification with the outcome.
+ * the admin saves the tenant URL or the tool name. Surfaces the outcome as a notification.
  *
  * @return void
  */
-function local_ransomleak_tenanturl_updated() {
+function local_ransomleak_settings_updated() {
     $tenanturl = get_config('local_ransomleak', 'tenanturl');
     if (empty($tenanturl)) {
         return;

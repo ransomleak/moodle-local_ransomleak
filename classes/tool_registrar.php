@@ -104,20 +104,20 @@ class tool_registrar {
             $existing->state = LTI_TOOL_STATE_CONFIGURED;
             $config->lti_clientid = $existing->clientid;
             lti_update_type($existing, $config);
-            // Record the id so later lookups are by id, even if the tenant URL changes.
-            set_config('ltitypeid', (int) $existing->id, 'local_ransomleak');
-            return (int) $existing->id;
+            $typeid = (int) $existing->id;
+        } else {
+            $type = (object) [
+                'name'         => $toolname,
+                'baseurl'      => $launchurl,
+                'course'       => $SITE->id, // Site-level tool.
+                'state'        => LTI_TOOL_STATE_CONFIGURED,
+                'coursevisible' => LTI_COURSEVISIBLE_ACTIVITYCHOOSER,
+                'description'  => 'Security-awareness training and phishing drills (RansomLeak).',
+            ];
+            $typeid = (int) lti_add_type($type, $config);
         }
 
-        $type = (object) [
-            'name'         => $toolname,
-            'baseurl'      => $launchurl,
-            'course'       => $SITE->id, // Site-level tool.
-            'state'        => LTI_TOOL_STATE_CONFIGURED,
-            'coursevisible' => LTI_COURSEVISIBLE_ACTIVITYCHOOSER,
-            'description'  => 'Security-awareness training and phishing drills (RansomLeak).',
-        ];
-        $typeid = (int) lti_add_type($type, $config);
+        // Record the id so later lookups are by id, even if the tenant URL changes.
         set_config('ltitypeid', $typeid, 'local_ransomleak');
         return $typeid;
     }
