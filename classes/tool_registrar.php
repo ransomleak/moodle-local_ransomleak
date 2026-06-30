@@ -71,10 +71,8 @@ class tool_registrar {
             // teacher choose a specific exercise / course / learning path from the
             // activity chooser instead of launching the whole catalog. The DL request
             // is routed through the same OIDC login + launch endpoint (the launch
-            // validator branches on message_type). VERIFY the exact key against
-            // mod/lti/locallib.php on a live Moodle — recent Moodle uses
-            // 'lti_contentitem' (toggle) and may name the URL field
-            // 'lti_toolurl_ContentItemSelectionRequest' rather than the key below.
+            // validator branches on message_type). Verified on Moodle 5.2.1: these
+            // keys are stored as `contentitem` / `contentitem_url` in lti_types_config.
             'lti_contentitem'     => 1,
             'lti_contentitem_url' => $launchurl,
             // Privacy: RansomLeak identifies learners by the LTI `sub` claim and

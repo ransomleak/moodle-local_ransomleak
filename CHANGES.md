@@ -2,6 +2,20 @@
 
 All notable changes to `local_ransomleak` are documented here.
 
+## v0.2.0 — 2026-06-30
+
+- **Verified on Moodle 5.2.1.** The plugin installs cleanly and the `tool_registrar`
+  auto-creates a correct LTI 1.3 tool: `contentitem` (Deep Linking),
+  `ltiservice_memberships` (NRPS), and `ltiservice_gradesynchronization` (AGS) are
+  all accepted and enabled, with the right login / launch / JWKS URLs and
+  `coursevisible` = activity chooser. Confirmed `lti_contentitem` /
+  `lti_contentitem_url` are the correct Moodle config keys (no
+  `lti_toolurl_ContentItemSelectionRequest` needed).
+- Maturity raised ALPHA → BETA.
+
+> Still pending: a full real-LMS **launch + grade writeback** end-to-end against a
+> running RansomLeak tool. The registrar config itself is now verified.
+
 ## v0.1.0 — 2026-06-30
 
 Initial standalone repository, extracted from the RansomLeak monorepo scaffold.
@@ -16,8 +30,3 @@ Initial standalone repository, extracted from the RansomLeak monorepo scaffold.
     pick a specific exercise, course, or learning path from the activity chooser.
 - Null privacy provider (the plugin stores no personal data of its own).
 - GPLv3; `moodle-plugin-ci` workflow (phplint, phpcs, phpdoc, validate, phpunit).
-
-> **MATURITY_ALPHA — scaffold.** The `tool_registrar` config keys (especially the
-> Deep Linking key name) are **not yet verified against a live Moodle**. Test the
-> full launch + grade writeback on Moodle 4.1 LTS, 4.5 LTS, and 5.x before the
-> Plugins Directory submission.
