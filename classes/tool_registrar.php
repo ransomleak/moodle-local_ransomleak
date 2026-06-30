@@ -21,7 +21,7 @@ namespace local_ransomleak;
  *
  * The config keys below follow Moodle's mod_lti type-config form
  * (mod/lti/edit_form.php) and are consumed by lti_add_type(). Verified on
- * Moodle 5.2.1 (CI-tested on 4.1 LTS / 4.5 LTS / 5.0).
+ * Moodle 5.2.1; CI runs install + code checks on 4.1 LTS / 4.5 LTS / 5.0.
  *
  * @package    local_ransomleak
  * @copyright  2026 RansomLeak
@@ -115,7 +115,7 @@ class tool_registrar {
     private static function normalise_tenant_url(string $tenanturl): string {
         $tenanturl = trim($tenanturl);
         $parts = parse_url($tenanturl);
-        if (empty($parts['scheme']) || $parts['scheme'] !== 'https' || empty($parts['host'])) {
+        if (($parts['scheme'] ?? '') !== 'https' || empty($parts['host'])) {
             throw new \moodle_exception('invalidtenanturl', 'local_ransomleak');
         }
         return 'https://' . $parts['host'] . (isset($parts['port']) ? ':' . $parts['port'] : '');
@@ -129,7 +129,6 @@ class tool_registrar {
      */
     private static function find_existing_type(string $launchurl): ?\stdClass {
         global $DB;
-        $record = $DB->get_record('lti_types', ['baseurl' => $launchurl], '*', IGNORE_MULTIPLE);
-        return $record ?: null;
+        return $DB->get_record('lti_types', ['baseurl' => $launchurl], '*', IGNORE_MULTIPLE) ?: null;
     }
 }

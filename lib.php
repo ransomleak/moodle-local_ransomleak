@@ -34,10 +34,7 @@ function local_ransomleak_tenanturl_updated() {
         return;
     }
 
-    $toolname = get_config('local_ransomleak', 'toolname');
-    if (empty($toolname)) {
-        $toolname = get_string('toolname_default', 'local_ransomleak');
-    }
+    $toolname = get_config('local_ransomleak', 'toolname') ?: get_string('toolname_default', 'local_ransomleak');
 
     try {
         \local_ransomleak\tool_registrar::register((string)$tenanturl, (string)$toolname);
