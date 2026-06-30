@@ -24,6 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+// Load the settings-change callback so it is callable when Moodle writes settings
+// (the settings tree only auto-loads settings.php, not lib.php).
+require_once(__DIR__ . '/lib.php');
+
 if ($hassiteconfig) {
     $settings = new admin_settingpage('local_ransomleak', get_string('pluginname', 'local_ransomleak'));
     $ADMIN->add('localplugins', $settings);
@@ -40,16 +44,19 @@ if ($hassiteconfig) {
         get_string('tenanturl', 'local_ransomleak'),
         get_string('tenanturl_desc', 'local_ransomleak'),
         '',
-        PARAM_URL
+        PARAM_RAW_TRIMMED
     );
     $tenant->set_updatedcallback('local_ransomleak_tenanturl_updated');
     $settings->add($tenant);
 
-    $settings->add(new admin_setting_configtext(
+    // Tool display name. Also (re)registers so a rename syncs to the LTI tool.
+    $name = new admin_setting_configtext(
         'local_ransomleak/toolname',
         get_string('toolname', 'local_ransomleak'),
         get_string('toolname_desc', 'local_ransomleak'),
         get_string('toolname_default', 'local_ransomleak'),
         PARAM_TEXT
-    ));
+    );
+    $name->set_updatedcallback('local_ransomleak_tenanturl_updated');
+    $settings->add($name);
 }

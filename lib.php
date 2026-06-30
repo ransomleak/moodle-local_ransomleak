@@ -40,6 +40,6 @@ function local_ransomleak_tenanturl_updated() {
         \local_ransomleak\tool_registrar::register((string)$tenanturl, (string)$toolname);
         \core\notification::success(get_string('registered', 'local_ransomleak', s($tenanturl)));
     } catch (\Throwable $e) {
-        \core\notification::error(get_string('registerfailed', 'local_ransomleak', $e->getMessage()));
+        \core\notification::error(get_string('registerfailed', 'local_ransomleak', s($e->getMessage())));
     }
 }

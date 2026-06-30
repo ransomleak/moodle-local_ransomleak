@@ -71,10 +71,11 @@ class tool_registrar {
             // teacher choose a specific exercise / course / learning path from the
             // activity chooser instead of launching the whole catalog. The DL request
             // is routed through the same OIDC login + launch endpoint (the launch
-            // validator branches on message_type). Verified on Moodle 5.2.1: these
-            // keys are stored as `contentitem` / `contentitem_url` in lti_types_config.
-            'lti_contentitem'     => 1,
-            'lti_contentitem_url' => $launchurl,
+            // validator branches on message_type). 'lti_contentitem' enables it;
+            // 'lti_toolurl_ContentItemSelectionRequest' is Moodle's config key for the
+            // content-item URL (our launch endpoint also serves DL requests).
+            'lti_contentitem'                         => 1,
+            'lti_toolurl_ContentItemSelectionRequest' => $launchurl,
             // Privacy: RansomLeak identifies learners by the LTI `sub` claim and
             // provisions just-in-time — never by email. Send the display name so
             // launches read nicely; leave email to the teacher's discretion.
@@ -88,6 +89,26 @@ class tool_registrar {
             'ltiservice_toolsettings'         => 0,
         ];
 
+        // Resolve the tool by the id recorded on first creation (durable identity),
+        // so changing the tenant URL later (e.g. subdomain -> custom domain) updates
+        // the same tool instead of orphaning it and minting a duplicate.
+        if ($existing = self::find_existing_type($launchurl)) {
+            // Update the existing row in place. Overwrite only the fields this plugin
+            // manages (name, URLs, visibility) and keep what Moodle/the admin own.
+            // Crucially, preserve the platform-assigned client id: an empty
+            // lti_clientid makes Moodle mint a NEW one on every save, which would
+            // break launches the admin already registered in RansomLeak.
+            $existing->name = $toolname;
+            $existing->baseurl = $launchurl;
+            $existing->coursevisible = LTI_COURSEVISIBLE_ACTIVITYCHOOSER;
+            $existing->state = LTI_TOOL_STATE_CONFIGURED;
+            $config->lti_clientid = $existing->clientid;
+            lti_update_type($existing, $config);
+            // Record the id so later lookups are by id, even if the tenant URL changes.
+            set_config('ltitypeid', (int) $existing->id, 'local_ransomleak');
+            return (int) $existing->id;
+        }
+
         $type = (object) [
             'name'         => $toolname,
             'baseurl'      => $launchurl,
@@ -96,16 +117,6 @@ class tool_registrar {
             'coursevisible' => LTI_COURSEVISIBLE_ACTIVITYCHOOSER,
             'description'  => 'Security-awareness training and phishing drills (RansomLeak).',
         ];
-
-        // Resolve the tool by the id recorded on first creation (durable identity),
-        // so changing the tenant URL later (e.g. subdomain -> custom domain) updates
-        // the same tool instead of orphaning it and minting a duplicate.
-        if ($existing = self::find_existing_type($launchurl)) {
-            $type->id = $existing->id;
-            lti_update_type($type, $config);
-            return (int) $existing->id;
-        }
-
         $typeid = (int) lti_add_type($type, $config);
         set_config('ltitypeid', $typeid, 'local_ransomleak');
         return $typeid;
@@ -121,10 +132,15 @@ class tool_registrar {
     private static function normalise_tenant_url(string $tenanturl): string {
         $tenanturl = trim($tenanturl);
         $parts = parse_url($tenanturl);
-        if (($parts['scheme'] ?? '') !== 'https' || empty($parts['host'])) {
+        // parse_url preserves the case of scheme/host as typed; lowercase them for a
+        // canonical, match-stable base (URL scheme + host are case-insensitive).
+        if (strtolower($parts['scheme'] ?? '') !== 'https' || empty($parts['host'])) {
             throw new \moodle_exception('invalidtenanturl', 'local_ransomleak');
         }
-        return 'https://' . $parts['host'] . (isset($parts['port']) ? ':' . $parts['port'] : '');
+        $host = strtolower($parts['host']);
+        // Drop the default https port so https://host and https://host:443 normalise alike.
+        $port = (isset($parts['port']) && (int) $parts['port'] !== 443) ? ':' . $parts['port'] : '';
+        return 'https://' . $host . $port;
     }
 
     /**

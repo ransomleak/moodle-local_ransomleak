@@ -2,6 +2,29 @@
 
 All notable changes to `local_ransomleak` are documented here.
 
+## v0.2.2 — 2026-06-30
+
+Correctness fixes from a code review (all verified live on Moodle 5.2.1):
+
+- **Critical — stop rotating the client_id on every save.** The update path passed
+  an empty `lti_clientid`, so Moodle minted a fresh client_id on each settings save,
+  breaking every launch the admin had already registered in RansomLeak. The existing
+  client_id is now preserved on update.
+- **Preserve admin edits on update** — the update modifies the existing tool row in
+  place (only name/URLs/visibility), so a description edited in *Manage tools* is no
+  longer overwritten.
+- **Backfill the type id on update**, not only on create, so the URL-change
+  protection also covers installs upgraded from an earlier version.
+- **Correct Deep Linking key** — `lti_toolurl_ContentItemSelectionRequest` instead of
+  the dead `lti_contentitem_url`.
+- **Normalise the tenant URL** — accept uppercase schemes (`HTTPS://`), lowercase the
+  host, and drop the default `:443` port for stable matching.
+- **Don't silently drop a pasted URL** with surrounding whitespace
+  (`PARAM_RAW_TRIMMED` instead of `PARAM_URL`, which blanked such input with no error).
+- **Sync a rename** — the tool-name setting now re-registers too.
+- Load `lib.php` from `settings.php` so the settings-change callback is always
+  callable on save; HTML-escape the error notification.
+
 ## v0.2.1 — 2026-06-30
 
 - **Robust to tenant-URL changes.** The registrar now records the Moodle-assigned
