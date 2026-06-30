@@ -132,8 +132,8 @@ class tool_registrar {
     private static function normalise_tenant_url(string $tenanturl): string {
         $tenanturl = trim($tenanturl);
         $parts = parse_url($tenanturl);
-        // parse_url preserves the case of scheme/host as typed; lowercase them for a
-        // canonical, match-stable base (URL scheme + host are case-insensitive).
+        // Lowercase the scheme/host (parse_url keeps their case as typed) for a
+        // canonical, match-stable base — URL scheme and host are case-insensitive.
         if (strtolower($parts['scheme'] ?? '') !== 'https' || empty($parts['host'])) {
             throw new \moodle_exception('invalidtenanturl', 'local_ransomleak');
         }
