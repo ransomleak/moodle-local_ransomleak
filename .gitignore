@@ -1,0 +1,20 @@
+# moodle-plugin-ci / local Moodle build artifacts
+/ci/
+/moodle/
+/moodledata/
+/vendor/
+/node_modules/
+composer.lock
+package-lock.json
+
+# logs / temp
+*.log
+*.tmp
+
+# editors / OS
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
