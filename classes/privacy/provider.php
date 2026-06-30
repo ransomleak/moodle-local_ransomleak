@@ -24,8 +24,6 @@
 
 namespace local_ransomleak\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Null privacy provider.
  *
@@ -34,7 +32,6 @@ defined('MOODLE_INTERNAL') || die();
  * launch is governed by Moodle's External tool (mod_lti) and the RansomLeak service.
  */
 class provider implements \core_privacy\local\metadata\null_provider {
-
     /**
      * Get the language string identifier explaining why this plugin stores no data.
      *

@@ -27,5 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->component = 'local_ransomleak';
 $plugin->version   = 2026063001;        // YYYYMMDDXX.
 $plugin->requires  = 2022112800;        // Moodle 4.1 LTS (LTI 1.3 type config is stable from 3.10+).
-$plugin->maturity  = MATURITY_BETA;     // Registrar verified on Moodle 5.2.1 (creates a full LTI Advantage tool); launch e2e pending.
+$plugin->maturity  = MATURITY_BETA;     // Verified on Moodle 5.2.1; launch e2e pending.
 $plugin->release   = 'v0.2.0';

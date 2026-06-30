@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Settings-change callback: (re)register the preconfigured LTI 1.3 tool whenever
  * the admin saves a new tenant URL. Surfaces a notification with the outcome.

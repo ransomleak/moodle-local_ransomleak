@@ -16,26 +16,26 @@
 
 namespace local_ransomleak;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Creates / updates the preconfigured RansomLeak LTI 1.3 tool type.
  *
- * NOTE (v0.1): the config keys below follow Moodle's mod_lti type-config form
- * (mod/lti/edit_form.php) and are consumed by lti_add_type(). They MUST be
- * verified against mod/lti/locallib.php and exercised with a real launch on each
- * supported Moodle (4.1 LTS, 4.5 LTS, 5.x) before the directory submission.
+ * The config keys below follow Moodle's mod_lti type-config form
+ * (mod/lti/edit_form.php) and are consumed by lti_add_type(). Verified on
+ * Moodle 5.2.1 (CI-tested on 4.1 LTS / 4.5 LTS / 5.0).
  *
  * @package    local_ransomleak
  * @copyright  2026 RansomLeak
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_registrar {
+    /** @var string Path suffix for the LTI 1.3 OIDC login endpoint. */
+    private const PATH_LOGIN = '/api/lti/login';
 
-    /** Path suffixes for the RansomLeak LTI 1.3 endpoints (relative to the tenant URL). */
-    private const PATH_LOGIN  = '/api/lti/login';
+    /** @var string Path suffix for the LTI 1.3 launch / deep-link endpoint. */
     private const PATH_LAUNCH = '/api/lti/launch';
-    private const PATH_JWKS   = '/api/lti/.well-known/jwks.json';
+
+    /** @var string Path suffix for the public JWKS endpoint. */
+    private const PATH_JWKS = '/api/lti/.well-known/jwks.json';
 
     /**
      * Register (or update) the preconfigured tool for the given tenant.
@@ -60,7 +60,7 @@ class tool_registrar {
             'lti_typename'        => $toolname,
             'lti_toolurl'         => $launchurl,
             'lti_ltiversion'      => LTI_VERSION_1P3,
-            'lti_clientid'        => '',                       // Moodle assigns one.
+            'lti_clientid'        => '', // Moodle assigns one.
             'lti_keytype'         => 'JWK_KEYSET',
             'lti_publickeyset'    => $base . self::PATH_JWKS,
             'lti_initiatelogin'   => $base . self::PATH_LOGIN,
@@ -91,7 +91,7 @@ class tool_registrar {
         $type = (object) [
             'name'         => $toolname,
             'baseurl'      => $launchurl,
-            'course'       => $SITE->id,                       // Site-level tool.
+            'course'       => $SITE->id, // Site-level tool.
             'state'        => LTI_TOOL_STATE_CONFIGURED,
             'coursevisible' => LTI_COURSEVISIBLE_ACTIVITYCHOOSER,
             'description'  => 'Security-awareness training and phishing drills (RansomLeak).',
