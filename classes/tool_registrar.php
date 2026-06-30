@@ -97,12 +97,18 @@ class tool_registrar {
             'description'  => 'Security-awareness training and phishing drills (RansomLeak).',
         ];
 
+        // Resolve the tool by the id recorded on first creation (durable identity),
+        // so changing the tenant URL later (e.g. subdomain -> custom domain) updates
+        // the same tool instead of orphaning it and minting a duplicate.
         if ($existing = self::find_existing_type($launchurl)) {
-            lti_update_type($existing, $config);
+            $type->id = $existing->id;
+            lti_update_type($type, $config);
             return (int) $existing->id;
         }
 
-        return (int) lti_add_type($type, $config);
+        $typeid = (int) lti_add_type($type, $config);
+        set_config('ltitypeid', $typeid, 'local_ransomleak');
+        return $typeid;
     }
 
     /**
@@ -122,13 +128,19 @@ class tool_registrar {
     }
 
     /**
-     * Find an existing lti type previously created for this launch URL, if any.
+     * Find the lti type this plugin manages: by the recorded type id first (robust
+     * to tenant-URL changes), falling back to a baseurl match for tools created
+     * before the id was tracked, or after a manual delete/recreate.
      *
      * @param string $launchurl
      * @return \stdClass|null
      */
     private static function find_existing_type(string $launchurl): ?\stdClass {
         global $DB;
+        $typeid = get_config('local_ransomleak', 'ltitypeid');
+        if ($typeid && ($record = $DB->get_record('lti_types', ['id' => $typeid]))) {
+            return $record;
+        }
         return $DB->get_record('lti_types', ['baseurl' => $launchurl], '*', IGNORE_MULTIPLE) ?: null;
     }
 }

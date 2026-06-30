@@ -2,6 +2,16 @@
 
 All notable changes to `local_ransomleak` are documented here.
 
+## v0.2.1 — 2026-06-30
+
+- **Robust to tenant-URL changes.** The registrar now records the Moodle-assigned
+  lti type id on first creation and updates that same tool on later saves, so a
+  tenant-URL change (e.g. subdomain → custom domain) updates the existing tool
+  instead of orphaning it and minting a duplicate. Verified on Moodle 5.2.1
+  (register → change URL → re-register updates the same tool in place).
+- Minor code cleanups: collapsed a redundant scheme check, inlined single-use
+  vars, honest CI wording.
+
 ## v0.2.0 — 2026-06-30
 
 - **Verified on Moodle 5.2.1.** The plugin installs cleanly and the `tool_registrar`
