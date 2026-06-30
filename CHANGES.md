@@ -2,6 +2,11 @@
 
 All notable changes to `local_ransomleak` are documented here.
 
+## v1.0.0 — 2026-06-30
+
+First stable release. The verified v0.2.x codebase is promoted to a 1.0 stable
+line — no functional changes since v0.2.2; maturity raised Beta → Stable.
+
 ## v0.2.2 — 2026-06-30
 
 Correctness fixes from a code review (all verified live on Moodle 5.2.1):
