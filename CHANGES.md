@@ -2,6 +2,22 @@
 
 All notable changes to `local_ransomleak` are documented here.
 
+## v1.0.1 — 2026-08-02
+
+Plugins-directory review follow-up (ticket MMR-27, non-blocking). No functional
+changes.
+
+- **Language file string syntax.** `lang/en/local_ransomleak.php` built three strings
+  (`privacy:metadata`, `settingsheading_desc`, `tenanturl_desc`) with `.` concatenation
+  across several lines. Moodle requires language files to be pure
+  `$string['id'] = 'value';` assignments — no concatenation, heredoc, or nowdoc — so
+  each is now a single assignment. Long lines are fine here: the Moodle coding standard
+  ignores line length in `lang/` files.
+- **README accuracy.** The status block still described a "v0.1 scaffold — NOT yet
+  verified against a live Moodle", and a "Before submission" checklist listed work that
+  was already done. Replaced with the real status, a compatibility table, and install
+  paths for both Moodle 4.x (`local/`) and 5.x (`public/local/`).
+
 ## v1.0.0 — 2026-06-30
 
 First stable release. The verified v0.2.x codebase is promoted to a 1.0 stable

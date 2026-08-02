@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_ransomleak';
-$plugin->version   = 2026063004;        // YYYYMMDDXX.
+$plugin->version   = 2026080200;        // YYYYMMDDXX.
 $plugin->requires  = 2022112800;        // Moodle 4.1 LTS (LTI 1.3 type config is stable from 3.10+).
 $plugin->maturity  = MATURITY_STABLE;   // Verified on Moodle 5.2.1.
-$plugin->release   = 'v1.0.0';
+$plugin->release   = 'v1.0.1';

@@ -5,10 +5,11 @@ preconfigured **LTI 1.3 external tool**, so site admins can add RansomLeak
 security-awareness content to courses without hand-entering URLs. Intended for the
 [Moodle Plugins directory](https://moodle.org/plugins/).
 
-> **Status: v0.1 scaffold — NOT yet verified against a live Moodle.** The
-> `tool_registrar` LTI-type config must be exercised with a real launch on each
-> supported Moodle (4.1 LTS → 5.x) before the directory submission. See
-> [Before submission](#before-submission).
+> **Status: v1.0.1, stable.** The registrar is verified against a live Moodle 5.2.1
+> (install → register → re-register → URL change), and `moodle-plugin-ci` is green on
+> Moodle 4.1 LTS, 4.5 LTS and 5.0 across PHP 8.1–8.3. Submitted to the
+> [Moodle Plugins directory](https://moodle.org/plugins/) and awaiting moderator
+> approval.
 
 ## Why a plugin (vs. just docs)
 
@@ -78,28 +79,36 @@ one-time manual exchange (the plugin automates the Moodle half):
 └── LICENSE                          # GNU GPL v3
 ```
 
-## Install (for testing)
+## Install
 
-Clone (or copy) this repo into `<moodle>/local/ransomleak/`:
+Install from the Moodle Plugins directory, or clone this repo into your site's
+`local/` directory. **On Moodle 5.x the site root moved to `public/`**, so the target
+path differs:
 
 ```bash
+# Moodle 4.1 – 4.5
 git clone https://github.com/ransomleak/moodle-local_ransomleak.git \
   /path/to/moodle/local/ransomleak
+
+# Moodle 5.0+
+git clone https://github.com/ransomleak/moodle-local_ransomleak.git \
+  /path/to/moodle/public/local/ransomleak
 ```
 
 Then visit *Site administration → Notifications* to run the install, and set your
 tenant URL under *Site administration → Plugins → Local plugins → RansomLeak*.
 
-## Before submission
+## Compatibility
 
-- [ ] Verify `tool_registrar` against Moodle source (`mod/lti/locallib.php` →
-      `lti_add_type()` config keys) and **test the full launch + grade writeback on a
-      live Moodle** (4.1 LTS, 4.5 LTS, 5.x). In particular confirm the Deep Linking key
-      name (`lti_contentitem` / `lti_toolurl_ContentItemSelectionRequest`).
-- [ ] Green `moodle-plugin-ci` run (phpcs moodle style, phpdoc, validate).
-- [ ] Tag a release (`v0.1.0`) and register the repo URL in the
-      [Plugins directory](https://moodle.org/plugins/) — **submission needs a
-      moodle.org maintainer account** (manual; review target ≈ 3 working days).
+| | |
+|---|---|
+| Moodle | 4.1 LTS – 5.2 |
+| PHP | 8.1 – 8.3 |
+| Maturity | Stable |
+| License | GNU GPL v3 or later |
+
+Verified end-to-end on a live Moodle 5.2.1: install, tool registration, re-registration
+after a tenant-URL change, and Deep Linking / AGS / NRPS enabled on the created tool.
 
 ## License
 
