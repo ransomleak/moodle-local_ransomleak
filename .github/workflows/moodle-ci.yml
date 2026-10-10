@@ -30,6 +30,10 @@ jobs:
             moodle-branch: 'MOODLE_405_STABLE'   # 4.5 LTS
           - php: '8.3'
             moodle-branch: 'MOODLE_500_STABLE'   # 5.0
+          - php: '8.3'
+            moodle-branch: 'MOODLE_502_STABLE'   # 5.2
+          - php: '8.3'
+            moodle-branch: 'MOODLE_503_STABLE'   # 5.3 (latest)
 
     steps:
       - name: Check out plugin
